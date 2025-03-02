@@ -1,0 +1,130 @@
+import json
+
+class StudentRecordManager:
+    def __init__(self):
+        self.records = []  # List to store student records
+        self.filename = None  # Track the current file name
+    
+    def open_file(self, filename):
+        # Open and load student records from a file
+        try:
+            with open(filename, 'r') as file:
+                self.records = json.load(file)  # Load records from file
+            self.filename = filename
+            print("File loaded successfully.")
+        except FileNotFoundError:
+            print("File not found.")
+    
+    def save_file(self):
+        # Save student records to the current file
+        if self.filename:
+            with open(self.filename, 'w') as file:
+                json.dump(self.records, file, indent=4)  # Save records to file
+            print("File saved successfully.")
+        else:
+            self.save_as_file()
+    
+    def save_as_file(self):
+        # Save student records to a new file
+        filename = input("Enter filename to save: ")
+        with open(filename, 'w') as file:
+            json.dump(self.records, file, indent=4)
+        self.filename = filename
+        print("File saved successfully.")
+    
+    def show_all_students(self, order_by="last_name"):
+        # Display all student records sorted by last name or grade
+        if order_by == "last_name":
+            sorted_records = sorted(self.records, key=lambda x: x[1][1])  # Sort by last name
+        elif order_by == "grade":
+            sorted_records = sorted(self.records, key=lambda x: x[2] * 0.6 + x[3] * 0.4, reverse=True)  # Sort by computed grade
+        else:
+            sorted_records = self.records
+        
+        for record in sorted_records:
+            print(record)
+    
+    def show_student_record(self):
+        # Show a specific student's record by ID
+        student_id = input("Enter Student ID: ")
+        for record in self.records:
+            if record[0] == student_id:
+                print(record)  # Display the student record
+                return
+        print("Student not found.")
+    
+    def add_record(self):
+        # Add a new student record
+        student_id = input("Enter Student ID (6-digit): ")
+        first_name = input("Enter First Name: ")
+        last_name = input("Enter Last Name: ")
+        class_standing = float(input("Enter Class Standing Grade: "))
+        major_exam = float(input("Enter Major Exam Grade: "))
+        self.records.append((student_id, (first_name, last_name), class_standing, major_exam))  # Add new record
+        print("Record added successfully.")
+    
+    def edit_record(self):
+        # Edit an existing student's record
+        student_id = input("Enter Student ID to edit: ")
+        for i, record in enumerate(self.records):
+            if record[0] == student_id:
+                first_name = input("Enter New First Name: ")
+                last_name = input("Enter New Last Name: ")
+                class_standing = float(input("Enter New Class Standing Grade: "))
+                major_exam = float(input("Enter New Major Exam Grade: "))
+                self.records[i] = (student_id, (first_name, last_name), class_standing, major_exam)  # Update record
+                print("Record updated successfully.")
+                return
+        print("Student not found.")
+    
+    def delete_record(self):
+        # Delete a student record by ID
+        student_id = input("Enter Student ID to delete: ")
+        self.records = [record for record in self.records if record[0] != student_id]  # Remove record from list
+        print("Record deleted successfully.")
+
+    def menu(self):
+        # Display menu options for user interaction
+        while True:
+            print("\nMenu:")
+            print("1. Open File")
+            print("2. Save File")
+            print("3. Save As File")
+            print("4. Show All Students Record (Order by Last Name)")
+            print("5. Show All Students Record (Order by Grade)")
+            print("6. Show Student Record")
+            print("7. Add Record")
+            print("8. Edit Record")
+            print("9. Delete Record")
+            print("10. Exit")
+            
+            choice = input("Enter choice: ")
+            
+            if choice == "1":
+                filename = input("Enter filename: ")
+                self.open_file(filename)
+            elif choice == "2":
+                self.save_file()
+            elif choice == "3":
+                self.save_as_file()
+            elif choice == "4":
+                self.show_all_students("last_name")
+            elif choice == "5":
+                self.show_all_students("grade")
+            elif choice == "6":
+                self.show_student_record()
+            elif choice == "7":
+                self.add_record()
+            elif choice == "8":
+                self.edit_record()
+            elif choice == "9":
+                self.delete_record()
+            elif choice == "10":
+                print("Exiting program.")
+                break
+            else:
+                print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    manager = StudentRecordManager()
+    manager.menu()
