@@ -2,7 +2,7 @@ import csv
 import os
 import requests
 
-CSV_URL = "https://github.com/neilll24/Integrative-Programming/blob/main/IT0011-Activity/currency.csv"
+CSV_URL = "https://raw.githubusercontent.com/neilll24/main/Integrative-Programming/IT0011-Activity/currency.csv"
 
 def fetch_csv(file_path):
     """Fetches the CSV file if it is not already present locally."""
@@ -66,3 +66,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
